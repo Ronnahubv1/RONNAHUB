@@ -1,0 +1,317 @@
+-- Ronna Hub Script for Siren Head Legacy (Fast Money Farm Clean Version)
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+
+-- ลบ UI เก่าออกก่อน
+if CoreGui:FindFirstChild("RonnaHubUI") then
+    CoreGui.RonnaHubUI:Destroy()
+end
+
+-- ScreenGui หลัก
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RonnaHubUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+-- สีและธีม
+local PRIMARY_COLOR = Color3.fromRGB(0, 170, 255)
+local BG_COLOR = Color3.fromRGB(20, 20, 25)
+local ACCENT_COLOR = Color3.fromRGB(35, 35, 45)
+
+-- สถานะ
+local autofarmActive = false
+
+----------------------------------------------------------------
+-- 1. ปุ่มย่อ [ - ]
+----------------------------------------------------------------
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Name = "RonnaToggle"
+ToggleBtn.Size = UDim2.new(0, 45, 0, 45)
+ToggleBtn.Position = UDim2.new(0.05, 0, 0.2, 0)
+ToggleBtn.BackgroundColor3 = BG_COLOR
+ToggleBtn.BackgroundTransparency = 0.35
+ToggleBtn.Text = "R"
+ToggleBtn.TextColor3 = PRIMARY_COLOR
+ToggleBtn.TextSize = 24
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.Visible = false
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = ScreenGui
+
+local ToggleCorner = Instance.new("UICorner", ToggleBtn)
+ToggleCorner.CornerRadius = UDim.new(1, 0)
+
+local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
+ToggleStroke.Color = PRIMARY_COLOR
+ToggleStroke.Thickness = 1.5
+
+----------------------------------------------------------------
+-- 2. กรอบหลัก (ปรับขนาดให้กะทัดรัดขึ้นเพราะเหลือหน้าเดียว)
+----------------------------------------------------------------
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 280, 0, 160)
+MainFrame.Position = UDim2.new(0.5, -140, 0.5, -80)
+MainFrame.BackgroundColor3 = BG_COLOR
+MainFrame.BackgroundTransparency = 0.35
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner", MainFrame)
+MainCorner.CornerRadius = UDim.new(0, 12)
+
+local MainStroke = Instance.new("UIStroke", MainFrame)
+MainStroke.Color = PRIMARY_COLOR
+MainStroke.Thickness = 1.5
+MainStroke.Transparency = 0.4
+
+-- แถบหัวเรื่อง
+local Header = Instance.new("Frame", MainFrame)
+Header.Size = UDim2.new(1, 0, 0, 35)
+Header.BackgroundTransparency = 1
+
+local Title = Instance.new("TextLabel", Header)
+Title.Size = UDim2.new(1, -70, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Text = "• Ronna Hub"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 15
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- ปุ่มย่อ [ - ]
+local MinBtn = Instance.new("TextButton", Header)
+MinBtn.Size = UDim2.new(0, 26, 0, 26)
+MinBtn.Position = UDim2.new(1, -58, 0, 4)
+MinBtn.Text = "-"
+MinBtn.TextColor3 = PRIMARY_COLOR
+MinBtn.TextSize = 18
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.BackgroundColor3 = ACCENT_COLOR
+MinBtn.BackgroundTransparency = 0.5
+
+local MinCorner = Instance.new("UICorner", MinBtn)
+MinCorner.CornerRadius = UDim.new(0, 6)
+
+-- ปุ่มปิด [ X ]
+local CloseBtn = Instance.new("TextButton", Header)
+CloseBtn.Size = UDim2.new(0, 26, 0, 26)
+CloseBtn.Position = UDim2.new(1, -28, 0, 4)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+CloseBtn.TextSize = 13
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.BackgroundColor3 = ACCENT_COLOR
+CloseBtn.BackgroundTransparency = 0.5
+
+local CloseCorner = Instance.new("UICorner", CloseBtn)
+CloseCorner.CornerRadius = UDim.new(0, 6)
+
+----------------------------------------------------------------
+-- 3. หน้าใส่คีย์
+----------------------------------------------------------------
+local KeyFrame = Instance.new("Frame", MainFrame)
+KeyFrame.Size = UDim2.new(1, -20, 1, -45)
+KeyFrame.Position = UDim2.new(0, 10, 0, 40)
+KeyFrame.BackgroundTransparency = 1
+
+local KeyBox = Instance.new("TextBox", KeyFrame)
+KeyBox.Size = UDim2.new(1, 0, 0, 38)
+KeyBox.Position = UDim2.new(0, 0, 0, 10)
+KeyBox.PlaceholderText = "ป้อนคีย์..."
+KeyBox.Text = ""
+KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+KeyBox.TextSize = 13
+KeyBox.Font = Enum.Font.Gotham
+KeyBox.BackgroundColor3 = ACCENT_COLOR
+KeyBox.BackgroundTransparency = 0.4
+
+local KeyCorner = Instance.new("UICorner", KeyBox)
+KeyCorner.CornerRadius = UDim.new(0, 8)
+
+local KeyStroke = Instance.new("UIStroke", KeyBox)
+KeyStroke.Color = PRIMARY_COLOR
+KeyStroke.Transparency = 0.6
+
+local CopyBtn = Instance.new("TextButton", KeyFrame)
+CopyBtn.Size = UDim2.new(0.48, 0, 0, 36)
+CopyBtn.Position = UDim2.new(0, 0, 0, 62)
+CopyBtn.Text = "🔗 ก็อปปี้"
+CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyBtn.TextSize = 12
+CopyBtn.Font = Enum.Font.GothamBold
+CopyBtn.BackgroundColor3 = ACCENT_COLOR
+CopyBtn.BackgroundTransparency = 0.3
+
+local CopyCorner = Instance.new("UICorner", CopyBtn)
+CopyCorner.CornerRadius = UDim.new(0, 8)
+
+local CheckBtn = Instance.new("TextButton", KeyFrame)
+CheckBtn.Size = UDim2.new(0.48, 0, 0, 36)
+CheckBtn.Position = UDim2.new(0.52, 0, 0, 62)
+CheckBtn.Text = "✅ ตรวจสอบคีย์"
+CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheckBtn.TextSize = 12
+CheckBtn.Font = Enum.Font.GothamBold
+CheckBtn.BackgroundColor3 = PRIMARY_COLOR
+CheckBtn.BackgroundTransparency = 0.2
+
+local CheckCorner = Instance.new("UICorner", CheckBtn)
+CheckCorner.CornerRadius = UDim.new(0, 8)
+
+----------------------------------------------------------------
+-- 4. หน้าเมนูฟาร์มหลัก (ไม่มีแท็บซ้อน เหลือหน้าเดียวโล่งๆ)
+----------------------------------------------------------------
+local MenuFrame = Instance.new("Frame", MainFrame)
+MenuFrame.Size = UDim2.new(1, -20, 1, -45)
+MenuFrame.Position = UDim2.new(0, 10, 0, 40)
+MenuFrame.BackgroundTransparency = 1
+MenuFrame.Visible = false
+
+local FarmToggleFrame = Instance.new("Frame", MenuFrame)
+FarmToggleFrame.Size = UDim2.new(1, 0, 0, 38)
+FarmToggleFrame.Position = UDim2.new(0, 0, 0, 15)
+FarmToggleFrame.BackgroundColor3 = ACCENT_COLOR
+FarmToggleFrame.BackgroundTransparency = 0.4
+
+local FarmToggleCorner = Instance.new("UICorner", FarmToggleFrame)
+FarmToggleCorner.CornerRadius = UDim.new(0, 8)
+
+local FarmLabel = Instance.new("TextLabel", FarmToggleFrame)
+FarmLabel.Size = UDim2.new(1, -70, 1, 0)
+FarmLabel.Position = UDim2.new(0, 12, 0, 0)
+FarmLabel.Text = " • ออโต้ฟาร์มเงิน!"
+FarmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+FarmLabel.TextSize = 13
+FarmLabel.Font = Enum.Font.GothamBold
+FarmLabel.TextXAlignment = Enum.TextXAlignment.Left
+FarmLabel.BackgroundTransparency = 1
+
+local FarmBtn = Instance.new("TextButton", FarmToggleFrame)
+FarmBtn.Size = UDim2.new(0, 55, 0, 26)
+FarmBtn.Position = UDim2.new(1, -63, 0.5, -13)
+FarmBtn.Text = "[ off ]"
+FarmBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
+FarmBtn.TextSize = 11
+FarmBtn.Font = Enum.Font.GothamBold
+FarmBtn.BackgroundColor3 = BG_COLOR
+FarmBtn.BackgroundTransparency = 0.3
+
+local FarmBtnCorner = Instance.new("UICorner", FarmBtn)
+FarmBtnCorner.CornerRadius = UDim.new(0, 6)
+
+FarmBtn.MouseButton1Click:Connect(function()
+    autofarmActive = not autofarmActive
+    FarmBtn.Text = autofarmActive and "[ ON ]" or "[ off ]"
+    FarmBtn.TextColor3 = autofarmActive and PRIMARY_COLOR or Color3.fromRGB(150, 150, 150)
+end)
+
+----------------------------------------------------------------
+-- 5. ระบบ AUTOFARM BOX (สปีดไว พร้อมลุย)
+----------------------------------------------------------------
+local function isWoodenCrate(prompt)
+    local parent = prompt.Parent
+    if not parent then return false end
+    
+    local parentName = string.lower(parent.Name)
+    local grandParentName = parent.Parent and string.lower(parent.Parent.Name) or ""
+    
+    if string.find(parentName, "shop") or string.find(parentName, "gun") or string.find(parentName, "weapon") or 
+       string.find(grandParentName, "shop") or string.find(grandParentName, "gun") or string.find(grandParentName, "weapon") then
+        return false
+    end
+    
+    if string.find(parentName, "crate") or string.find(parentName, "box") or string.find(parentName, "chest") or string.find(parentName, "supply") or
+       string.find(grandParentName, "crate") or string.find(grandParentName, "box") or string.find(grandParentName, "chest") then
+        return true
+    end
+    
+    return false
+end
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        if autofarmActive then
+            pcall(function()
+                local char = LocalPlayer.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return end
+
+                for _, prompt in pairs(Workspace:GetDescendants()) do
+                    if not autofarmActive then break end
+
+                    if prompt:IsA("ProximityPrompt") and isWoodenCrate(prompt) and prompt.Parent then
+                        local targetPart = prompt.Parent:IsA("BasePart") and prompt.Parent or prompt.Parent:FindFirstChildWhichIsA("BasePart")
+                        
+                        if targetPart and targetPart.Parent then
+                            local targetCFrame = targetPart.CFrame + Vector3.new(0, 3.5, 0)
+                            
+                            local startTime = tick()
+                            while tick() - startTime < 0.35 and autofarmActive do
+                                hrp.Velocity = Vector3.new(0, 0, 0)
+                                hrp.CFrame = targetCFrame
+
+                                if firetouchinterest and targetPart then
+                                    firetouchinterest(hrp, targetPart, 0)
+                                    firetouchinterest(hrp, targetPart, 1)
+                                end
+
+                                prompt.RequiresLineOfSight = false
+                                prompt.MaxActivationDistance = 9999
+                                prompt.HoldDuration = 0
+                                fireproximityprompt(prompt)
+
+                                task.wait(0.02)
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+----------------------------------------------------------------
+-- 6. ระบบปุ่มกด และ คีย์
+----------------------------------------------------------------
+CheckBtn.MouseButton1Click:Connect(function()
+    if KeyBox.Text == "KEY-RONNAHUB" then
+        KeyFrame.Visible = false
+        MenuFrame.Visible = true
+    else
+        KeyBox.Text = ""
+        KeyBox.PlaceholderText = "❌ คีย์ไม่ถูกต้อง!"
+        task.wait(1.2)
+        KeyBox.PlaceholderText = "ป้อนคีย์..."
+    end
+end)
+
+CopyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard("https://discord.gg/2vbfWnxYp")
+        CopyBtn.Text = "✅ ก็อปปี้แล้ว!"
+        task.wait(1.2)
+        CopyBtn.Text = "🔗 ก็อปปี้"
+    end
+end)
+
+MinBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    ToggleBtn.Visible = true
+end)
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    ToggleBtn.Visible = false
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Deฟาร์มเงินรัวๆ
