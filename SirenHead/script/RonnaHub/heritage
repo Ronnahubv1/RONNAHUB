@@ -1,7 +1,6 @@
--- Ronna Hub Script for Siren Head Legacy (Fast Money Farm Clean Version)
+-- Ronna Hub Script for Siren Head Legacy (Money Farm Only - Clean)
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
-local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 
@@ -50,12 +49,12 @@ ToggleStroke.Color = PRIMARY_COLOR
 ToggleStroke.Thickness = 1.5
 
 ----------------------------------------------------------------
--- 2. กรอบหลัก (ปรับขนาดให้กะทัดรัดขึ้นเพราะเหลือหน้าเดียว)
+-- 2. กรอบหลัก (ขนาดมินิมอล)
 ----------------------------------------------------------------
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 280, 0, 160)
-MainFrame.Position = UDim2.new(0.5, -140, 0.5, -80)
+MainFrame.Size = UDim2.new(0, 270, 0, 150)
+MainFrame.Position = UDim2.new(0.5, -135, 0.5, -75)
 MainFrame.BackgroundColor3 = BG_COLOR
 MainFrame.BackgroundTransparency = 0.35
 MainFrame.Active = true
@@ -122,8 +121,8 @@ KeyFrame.Position = UDim2.new(0, 10, 0, 40)
 KeyFrame.BackgroundTransparency = 1
 
 local KeyBox = Instance.new("TextBox", KeyFrame)
-KeyBox.Size = UDim2.new(1, 0, 0, 38)
-KeyBox.Position = UDim2.new(0, 0, 0, 10)
+KeyBox.Size = UDim2.new(1, 0, 0, 36)
+KeyBox.Position = UDim2.new(0, 0, 0, 8)
 KeyBox.PlaceholderText = "ป้อนคีย์..."
 KeyBox.Text = ""
 KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -141,8 +140,8 @@ KeyStroke.Color = PRIMARY_COLOR
 KeyStroke.Transparency = 0.6
 
 local CopyBtn = Instance.new("TextButton", KeyFrame)
-CopyBtn.Size = UDim2.new(0.48, 0, 0, 36)
-CopyBtn.Position = UDim2.new(0, 0, 0, 62)
+CopyBtn.Size = UDim2.new(0.48, 0, 0, 34)
+CopyBtn.Position = UDim2.new(0, 0, 0, 52)
 CopyBtn.Text = "🔗 ก็อปปี้"
 CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CopyBtn.TextSize = 12
@@ -154,8 +153,8 @@ local CopyCorner = Instance.new("UICorner", CopyBtn)
 CopyCorner.CornerRadius = UDim.new(0, 8)
 
 local CheckBtn = Instance.new("TextButton", KeyFrame)
-CheckBtn.Size = UDim2.new(0.48, 0, 0, 36)
-CheckBtn.Position = UDim2.new(0.52, 0, 0, 62)
+CheckBtn.Size = UDim2.new(0.48, 0, 0, 34)
+CheckBtn.Position = UDim2.new(0.52, 0, 0, 52)
 CheckBtn.Text = "✅ ตรวจสอบคีย์"
 CheckBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CheckBtn.TextSize = 12
@@ -167,7 +166,7 @@ local CheckCorner = Instance.new("UICorner", CheckBtn)
 CheckCorner.CornerRadius = UDim.new(0, 8)
 
 ----------------------------------------------------------------
--- 4. หน้าเมนูฟาร์มหลัก (ไม่มีแท็บซ้อน เหลือหน้าเดียวโล่งๆ)
+-- 4. หน้าเมนูหลัก (เหลือแค่ปุ่ม ฟาร์มเงินรัวๆ!)
 ----------------------------------------------------------------
 local MenuFrame = Instance.new("Frame", MainFrame)
 MenuFrame.Size = UDim2.new(1, -20, 1, -45)
@@ -177,7 +176,7 @@ MenuFrame.Visible = false
 
 local FarmToggleFrame = Instance.new("Frame", MenuFrame)
 FarmToggleFrame.Size = UDim2.new(1, 0, 0, 38)
-FarmToggleFrame.Position = UDim2.new(0, 0, 0, 15)
+FarmToggleFrame.Position = UDim2.new(0, 0, 0, 12)
 FarmToggleFrame.BackgroundColor3 = ACCENT_COLOR
 FarmToggleFrame.BackgroundTransparency = 0.4
 
@@ -185,21 +184,21 @@ local FarmToggleCorner = Instance.new("UICorner", FarmToggleFrame)
 FarmToggleCorner.CornerRadius = UDim.new(0, 8)
 
 local FarmLabel = Instance.new("TextLabel", FarmToggleFrame)
-FarmLabel.Size = UDim2.new(1, -70, 1, 0)
-FarmLabel.Position = UDim2.new(0, 12, 0, 0)
-FarmLabel.Text = " • ออโต้ฟาร์มเงิน!"
+FarmLabel.Size = UDim2.new(1, -65, 1, 0)
+FarmLabel.Position = UDim2.new(0, 10, 0, 0)
+FarmLabel.Text = "• ฟาร์มเงินรัวๆ!"
 FarmLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-FarmLabel.TextSize = 13
+FarmLabel.TextSize = 12
 FarmLabel.Font = Enum.Font.GothamBold
 FarmLabel.TextXAlignment = Enum.TextXAlignment.Left
 FarmLabel.BackgroundTransparency = 1
 
 local FarmBtn = Instance.new("TextButton", FarmToggleFrame)
-FarmBtn.Size = UDim2.new(0, 55, 0, 26)
-FarmBtn.Position = UDim2.new(1, -63, 0.5, -13)
+FarmBtn.Size = UDim2.new(0, 50, 0, 24)
+FarmBtn.Position = UDim2.new(1, -56, 0.5, -12)
 FarmBtn.Text = "[ off ]"
 FarmBtn.TextColor3 = Color3.fromRGB(150, 150, 150)
-FarmBtn.TextSize = 11
+FarmBtn.TextSize = 10
 FarmBtn.Font = Enum.Font.GothamBold
 FarmBtn.BackgroundColor3 = BG_COLOR
 FarmBtn.BackgroundTransparency = 0.3
@@ -214,7 +213,7 @@ FarmBtn.MouseButton1Click:Connect(function()
 end)
 
 ----------------------------------------------------------------
--- 5. ระบบ AUTOFARM BOX (สปีดไว พร้อมลุย)
+-- 5. ระบบ AUTOFARM BOX
 ----------------------------------------------------------------
 local function isWoodenCrate(prompt)
     local parent = prompt.Parent
@@ -314,4 +313,5 @@ ToggleBtn.MouseButton1Click:Connect(function()
 end)
 
 CloseBtn.MouseButton1Click:Connect(function()
-    ScreenGui:Deฟาร์มเงินรัวๆ
+    ScreenGui:Destroy()
+end)
